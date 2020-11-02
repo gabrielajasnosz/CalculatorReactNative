@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Text} from 'react-native';
 
 class Result extends Component {
   render() {
@@ -14,8 +14,8 @@ class Result extends Component {
 
 const styles = StyleSheet.create({
   result: {
-    backgroundColor: '#595998',
-    height: 100,
+    backgroundColor: '#8f919d',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'flex-end',
   },

@@ -1,41 +1,94 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import Button from './Button';
 import Result from './Result';
 
 export default class App extends Component {
-  render() {
-    const tab = [
-      {title: 'AC', color: '#a6b4c4', size: '25%'},
-      {title: ' ', color: '#a6b4c4', size: '50%'},
-      {title: '/', color: '#242c53', size: '25%'},
-      {title: '7', color: '#a6b4c4', size: '25%'},
-      {title: '8', color: '#a6b4c4', size: '25%'},
-      {title: '9', color: '#a6b4c4', size: '25%'},
-      {title: 'x', color: '#242c53', size: '25%'},
-      {title: '4', color: '#a6b4c4', size: '25%'},
-      {title: '6', color: '#a6b4c4', size: '25%'},
-      {title: '5', color: '#a6b4c4', size: '25%'},
-      {title: '-', color: '#242c53', size: '25%'},
-      {title: '1', color: '#a6b4c4', size: '25%'},
-      {title: '2', color: '#a6b4c4', size: '25%'},
-      {title: '3', color: '#a6b4c4', size: '25%'},
-      {title: '+', color: '#242c53', size: '25%'},
-      {title: '0', color: '#a6b4c4', size: '50%'},
-      {title: ',', color: '#a6b4c4', size: '25%'},
-      {title: '=', color: '#242c53', size: '25%'},
+  constructor(props) {
+    super(props);
+
+    const isPortrait = () => {
+      const dim = Dimensions.get('window');
+      return dim.height > dim.width;
+    };
+
+    this.state = {
+      display: '0',
+      orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
+    };
+
+    this.portraitButtons = [
+      {key: 1, title: 'AC', color: '#787d8c', size: '25%'},
+      {key: 2, title: ' ', color: '#787d8c', size: '50%'},
+      {key: 3, title: '/', color: '#1e5169', size: '25%'},
+      {key: 4, title: '7', color: '#7d8491', size: '25%'},
+      {key: 5, title: '8', color: '#7d8491', size: '25%'},
+      {key: 6, title: '9', color: '#7d8491', size: '25%'},
+      {key: 7, title: 'x', color: '#1e5169', size: '25%'},
+      {key: 8, title: '4', color: '#7d8491', size: '25%'},
+      {key: 9, title: '6', color: '#7d8491', size: '25%'},
+      {key: 10, title: '5', color: '#7d8491', size: '25%'},
+      {key: 11, title: '-', color: '#1e5169', size: '25%'},
+      {key: 12, title: '1', color: '#7d8491', size: '25%'},
+      {key: 13, title: '2', color: '#7d8491', size: '25%'},
+      {key: 14, title: '3', color: '#7d8491', size: '25%'},
+      {key: 15, title: '+', color: '#1e5169', size: '25%'},
+      {key: 16, title: '0', color: '#7d8491', size: '50%'},
+      {key: 17, title: '.', color: '#7d8491', size: '25%'},
+      {key: 18, title: '=', color: '#1e5169', size: '25%'},
     ];
+
+    this.landscapeButtons = [
+      {key: 1, title: 'p', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 2, title: 'x!', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 3, title: 'AC', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 4, title: '+/-', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 5, title: '%', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 6, title: '/', color: '#1e5169', size: String(100 / 6) + '%'},
+      {key: 7, title: 'e^x', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 8, title: '10^x', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 9, title: '7', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 10, title: '8', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 11, title: '9', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 12, title: 'x', color: '#1e5169', size: String(100 / 6) + '%'},
+      {key: 13, title: 'ln', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 14, title: '1og10', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 15, title: '4', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 16, title: '5', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 17, title: '6', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 18, title: '-', color: '#1e5169', size: String(100 / 6) + '%'},
+      {key: 19, title: 'e', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 20, title: 'x^2', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 21, title: '1', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 22, title: '2', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 23, title: '3', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 24, title: '+', color: '#1e5169', size: String(100 / 6) + '%'},
+      {key: 25, title: 'pi', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 26, title: 'x^3', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 27, title: '0', color: '#7d8491', size: String(100 / 3) + '%'},
+      {key: 28, title: '.', color: '#7d8491', size: String(100 / 6) + '%'},
+      {key: 29, title: '=', color: '#1e5169', size: String(100 / 6) + '%'},
+    ];
+
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
+      });
+    });
+  }
+
+  renderPortraitButtons() {
     return (
       <View style={styles.container}>
-        <View style={styles.calc}>
-          <View style={styles.resultStyle}>
-            <Result title={0} />
-          </View>
-          {tab.map((element) => {
+        <View style={styles.resultStyle}>
+          <Result title={0} />
+        </View>
+        <View style={styles.calculatorStyle}>
+          {this.portraitButtons.map((element) => {
             return (
               <Button
                 title={element.title}
-                //key={element.id}
+                key={element.key}
                 color={element.color}
                 size={element.size}
               />
@@ -45,24 +98,54 @@ export default class App extends Component {
       </View>
     );
   }
+
+  renderLandscapeButtons() {
+    return (
+      <View style={styles.container}>
+        <View style={styles.resultStyle}>
+          <Result title={0} />
+        </View>
+        <View style={styles.calculatorStyle}>
+          {this.landscapeButtons.map((element) => {
+            return (
+              <Button
+                title={element.title}
+                key={element.key}
+                color={element.color}
+                size={element.size}
+              />
+            );
+          })}
+        </View>
+      </View>
+    );
+  }
+
+  render() {
+    let view =
+      this.state.orientation === 'PORTRAIT'
+        ? this.renderPortraitButtons()
+        : this.renderLandscapeButtons();
+
+    return <View style={styles.container}>{view}</View>;
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: '100%',
-    backgroundColor: '#ffffff',
   },
   resultStyle: {
+    flex: 1,
     width: '100%',
     alignSelf: 'flex-end',
-  },
-  calc: {
-    flex: 1,
     justifyContent: 'flex-end',
+  },
+  calculatorStyle: {
+    flex: 2,
+    alignContent: 'flex-start',
     flexDirection: 'row',
     flexWrap: 'wrap',
     width: '100%',
-    alignContent: 'flex-end',
   },
 });

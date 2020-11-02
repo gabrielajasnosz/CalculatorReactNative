@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 class Button extends Component {
   render() {
@@ -9,7 +9,7 @@ class Button extends Component {
         style={{
           backgroundColor: color,
           width: size,
-          height: 67,
+          height: '20%',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
