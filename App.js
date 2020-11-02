@@ -16,8 +16,10 @@ export default class App extends Component {
       displayValue: '0',
       operator: null,
       myValue: '0',
+      tempValue: '',
       isDot: false,
       isClicked: false,
+      isEqualsClicked: false,
       orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
     };
     this.state = this.initialState;
@@ -29,7 +31,7 @@ export default class App extends Component {
       {key: 4, title: '7', color: '#7d8491', size: '25%'},
       {key: 5, title: '8', color: '#7d8491', size: '25%'},
       {key: 6, title: '9', color: '#7d8491', size: '25%'},
-      {key: 7, title: 'x', color: '#1e5169', size: '25%'},
+      {key: 7, title: '*', color: '#1e5169', size: '25%'},
       {key: 8, title: '4', color: '#7d8491', size: '25%'},
       {key: 9, title: '6', color: '#7d8491', size: '25%'},
       {key: 10, title: '5', color: '#7d8491', size: '25%'},
@@ -55,7 +57,7 @@ export default class App extends Component {
       {key: 9, title: '7', color: '#7d8491', size: String(100 / 6) + '%'},
       {key: 10, title: '8', color: '#7d8491', size: String(100 / 6) + '%'},
       {key: 11, title: '9', color: '#7d8491', size: String(100 / 6) + '%'},
-      {key: 12, title: 'x', color: '#1e5169', size: String(100 / 6) + '%'},
+      {key: 12, title: '*', color: '#1e5169', size: String(100 / 6) + '%'},
       {key: 13, title: 'ln', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 14, title: '1og10', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 15, title: '4', color: '#7d8491', size: String(100 / 6) + '%'},
@@ -129,7 +131,15 @@ export default class App extends Component {
   }
 
   handleInput = (input) => {
-    const {displayValue, operator, myValue, isDot, isClicked} = this.state;
+    const {
+      displayValue,
+      operator,
+      myValue,
+      isDot,
+      isClicked,
+      isEqualsClicked,
+      tempValue,
+    } = this.state;
 
     switch (input) {
       case '0':
@@ -148,7 +158,7 @@ export default class App extends Component {
         break;
       case '+':
       case '-':
-      case 'x':
+      case '*':
       case '/':
         if (!isClicked) {
           this.setState({
@@ -157,6 +167,7 @@ export default class App extends Component {
             displayValue: '0',
             isDot: false,
             isClicked: true,
+            isEqualsClicked: false,
           });
         } else {
           this.setState({
@@ -176,13 +187,24 @@ export default class App extends Component {
         // eslint-disable-next-line no-eval
 
         if (operator != null) {
-          // eslint-disable-next-line no-eval
-          let result = eval(myValue + operator + displayValue);
-          this.setState({
-            displayValue: result % 1 === 0 ? result : result.toFixed(2),
-            isClicked: false,
-            myValue: result % 1 === 0 ? result : result.toFixed(2),
-          });
+          if (!isEqualsClicked) {
+            // eslint-disable-next-line no-eval
+            let result = eval(myValue + operator + displayValue);
+            this.setState({
+              tempValue: displayValue, //remembers last number
+              displayValue: result % 1 === 0 ? result : result.toFixed(2),
+              isClicked: false,
+              myValue: result % 1 === 0 ? result : result.toFixed(2),
+              isEqualsClicked: true,
+            });
+          } else {
+            // eslint-disable-next-line no-eval
+            let result = eval(myValue + operator + tempValue);
+            this.setState({
+              displayValue: result % 1 === 0 ? result : result.toFixed(2),
+              myValue: result % 1 === 0 ? result : result.toFixed(2),
+            });
+          }
         }
         break;
       case 'AC':
