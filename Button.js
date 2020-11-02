@@ -3,7 +3,7 @@ import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 
 class Button extends Component {
   render() {
-    const {title, color, size} = this.props;
+    const {title, color, size, handleOnPress} = this.props;
     return (
       <TouchableOpacity
         style={{
@@ -12,7 +12,8 @@ class Button extends Component {
           height: '20%',
           justifyContent: 'center',
           alignItems: 'center',
-        }}>
+        }}
+        onPress={() => handleOnPress({title})}>
         <Text style={styles.buttonText}>{title}</Text>
       </TouchableOpacity>
     );

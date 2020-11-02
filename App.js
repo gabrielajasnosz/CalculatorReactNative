@@ -12,10 +12,15 @@ export default class App extends Component {
       return dim.height > dim.width;
     };
 
-    this.state = {
-      display: '0',
+    this.initialState = {
+      displayValue: '0',
+      operator: null,
+      myValue: '0',
+      isDot: false,
+      isClicked: false,
       orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
     };
+    this.state = this.initialState;
 
     this.portraitButtons = [
       {key: 1, title: 'AC', color: '#787d8c', size: '25%'},
@@ -81,7 +86,7 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.resultStyle}>
-          <Result title={0} />
+          <Result title={this.state.displayValue} />
         </View>
         <View style={styles.calculatorStyle}>
           {this.portraitButtons.map((element) => {
@@ -91,6 +96,7 @@ export default class App extends Component {
                 key={element.key}
                 color={element.color}
                 size={element.size}
+                handleOnPress={this.handleInput.bind(this, element.title)}
               />
             );
           })}
@@ -103,7 +109,7 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.resultStyle}>
-          <Result title={0} />
+          <Result title={this.state.displayValue} />
         </View>
         <View style={styles.calculatorStyle}>
           {this.landscapeButtons.map((element) => {
@@ -113,6 +119,7 @@ export default class App extends Component {
                 key={element.key}
                 color={element.color}
                 size={element.size}
+                handleOnPress={this.handleInput.bind(this, element.title)}
               />
             );
           })}
@@ -120,6 +127,69 @@ export default class App extends Component {
       </View>
     );
   }
+
+  handleInput = (input) => {
+    const {displayValue, operator, myValue, isDot, isClicked} = this.state;
+
+    switch (input) {
+      case '0':
+      case '1':
+      case '2':
+      case '3':
+      case '4':
+      case '5':
+      case '6':
+      case '7':
+      case '8':
+      case '9':
+        this.setState({
+          displayValue: displayValue === '0' ? input : displayValue + input,
+        });
+        break;
+      case '+':
+      case '-':
+      case 'x':
+      case '/':
+        if (!isClicked) {
+          this.setState({
+            myValue: displayValue,
+            operator: input,
+            displayValue: '0',
+            isDot: false,
+            isClicked: true,
+          });
+        } else {
+          this.setState({
+            operator: input,
+          });
+        } //if the operator is already chosen it only changes the operator not the remembered values
+        break;
+      case '.':
+        if (!isDot) {
+          this.setState({
+            displayValue: displayValue + input,
+            isDot: true,
+          });
+        }
+        break;
+      case '=':
+        // eslint-disable-next-line no-eval
+
+        if (operator != null) {
+          // eslint-disable-next-line no-eval
+          let result = eval(myValue + operator + displayValue);
+          this.setState({
+            displayValue: result % 1 === 0 ? result : result.toFixed(2),
+            isClicked: false,
+            myValue: result % 1 === 0 ? result : result.toFixed(2),
+          });
+        }
+        break;
+      case 'AC':
+        this.setState(this.initialState);
+        break;
+    }
+  };
 
   render() {
     let view =
