@@ -25,8 +25,8 @@ export default class App extends Component {
     this.state = this.initialState;
 
     this.portraitButtons = [
-      {key: 1, title: 'AC', color: '#787d8c', size: '25%'},
-      {key: 2, title: ' ', color: '#787d8c', size: '50%'},
+      {key: 1, title: 'AC', color: '#7d8491', size: '25%'},
+      {key: 2, title: ' ', color: '#7d8491', size: '50%'},
       {key: 3, title: '/', color: '#1e5169', size: '25%'},
       {key: 4, title: '7', color: '#7d8491', size: '25%'},
       {key: 5, title: '8', color: '#7d8491', size: '25%'},
@@ -86,46 +86,36 @@ export default class App extends Component {
 
   renderPortraitButtons() {
     return (
-      <View style={styles.container}>
-        <View style={styles.resultStyle}>
-          <Result title={this.state.displayValue} />
-        </View>
-        <View style={styles.calculatorStyle}>
-          {this.portraitButtons.map((element) => {
-            return (
-              <Button
-                title={element.title}
-                key={element.key}
-                color={element.color}
-                size={element.size}
-                handleOnPress={this.handleInput.bind(this, element.title)}
-              />
-            );
-          })}
-        </View>
+      <View style={styles.calculatorStyle}>
+        {this.portraitButtons.map((element) => {
+          return (
+            <Button
+              title={element.title}
+              key={element.key}
+              color={element.color}
+              size={element.size}
+              handleOnPress={this.handleInput.bind(this, element.title)}
+            />
+          );
+        })}
       </View>
     );
   }
 
   renderLandscapeButtons() {
     return (
-      <View style={styles.container}>
-        <View style={styles.resultStyle}>
-          <Result title={this.state.displayValue} />
-        </View>
-        <View style={styles.calculatorStyle}>
-          {this.landscapeButtons.map((element) => {
-            return (
-              <Button
-                title={element.title}
-                key={element.key}
-                color={element.color}
-                size={element.size}
-                handleOnPress={this.handleInput.bind(this, element.title)}
-              />
-            );
-          })}
-        </View>
+      <View style={styles.calculatorStyle}>
+        {this.landscapeButtons.map((element) => {
+          return (
+            <Button
+              title={element.title}
+              key={element.key}
+              color={element.color}
+              size={element.size}
+              handleOnPress={this.handleInput.bind(this, element.title)}
+            />
+          );
+        })}
       </View>
     );
   }
@@ -139,6 +129,7 @@ export default class App extends Component {
       isClicked,
       isEqualsClicked,
       tempValue,
+      orientation,
     } = this.state;
 
     switch (input) {
@@ -219,7 +210,14 @@ export default class App extends Component {
         ? this.renderPortraitButtons()
         : this.renderLandscapeButtons();
 
-    return <View style={styles.container}>{view}</View>;
+    return (
+      <View style={styles.container}>
+        <View style={styles.resultStyle}>
+          <Result title={this.state.displayValue} />
+        </View>
+        {view}
+      </View>
+    );
   }
 }
 
