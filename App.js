@@ -12,7 +12,7 @@ export default class App extends Component {
       return dim.height > dim.width;
     };
 
-    this.initialState = {
+    this.state = {
       displayValue: '0',
       operator: null,
       myValue: '0',
@@ -22,7 +22,6 @@ export default class App extends Component {
       isEqualsClicked: false,
       orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
     };
-    this.state = this.initialState;
 
     this.portraitButtons = [
       {key: 1, title: 'AC', color: '#7d8491', size: '25%'},
@@ -129,7 +128,6 @@ export default class App extends Component {
       isClicked,
       isEqualsClicked,
       tempValue,
-      orientation,
     } = this.state;
 
     switch (input) {
@@ -199,7 +197,15 @@ export default class App extends Component {
         }
         break;
       case 'AC':
-        this.setState(this.initialState);
+        this.setState({
+          displayValue: '0',
+          operator: null,
+          myValue: '0',
+          tempValue: '',
+          isDot: false,
+          isClicked: false,
+          isEqualsClicked: false,
+        });
         break;
     }
   };
