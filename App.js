@@ -45,11 +45,11 @@ export default class App extends Component {
     ];
 
     this.landscapeButtons = [
-      {key: 1, title: 'p', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 2, title: 'x!', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 3, title: 'AC', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 4, title: '+/-', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 5, title: '%', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 1, title: '√x', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 2, title: '%', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 3, title: '+/-', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 4, title: 'AC', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 5, title: 'DEL', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 6, title: '/', color: '#1e5169', size: String(100 / 6) + '%'},
       {key: 7, title: 'e^x', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 8, title: '10^x', color: '#787d8c', size: String(100 / 6) + '%'},
@@ -57,8 +57,8 @@ export default class App extends Component {
       {key: 10, title: '8', color: '#7d8491', size: String(100 / 6) + '%'},
       {key: 11, title: '9', color: '#7d8491', size: String(100 / 6) + '%'},
       {key: 12, title: '*', color: '#1e5169', size: String(100 / 6) + '%'},
-      {key: 13, title: 'ln', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 14, title: '1og10', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 13, title: 'ln(x)', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 14, title: 'x!', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 15, title: '4', color: '#7d8491', size: String(100 / 6) + '%'},
       {key: 16, title: '5', color: '#7d8491', size: String(100 / 6) + '%'},
       {key: 17, title: '6', color: '#7d8491', size: String(100 / 6) + '%'},
@@ -149,6 +149,7 @@ export default class App extends Component {
       case '-':
       case '*':
       case '/':
+      case '%':
         if (!isClicked) {
           this.setState({
             myValue: displayValue,
@@ -206,6 +207,84 @@ export default class App extends Component {
           isClicked: false,
           isEqualsClicked: false,
         });
+        break;
+      case '√x':
+        let result = Math.sqrt(displayValue);
+        this.setState({
+          displayValue: result % 1 === 0 ? result : result.toFixed(4),
+        });
+        break;
+      case 'x!':
+        if (displayValue <= 20) {
+          if (displayValue === 0 || displayValue === 1) {
+            this.setState({
+              displayValue: 1,
+            });
+          } else {
+            let factorial = 1;
+            let counter = Math.round(displayValue);
+            while (counter > 1) {
+              factorial = factorial * counter;
+              counter = counter - 1;
+            }
+            this.setState({
+              displayValue: factorial,
+            });
+          }
+        }
+        break;
+      case 'x^2':
+        this.setState({
+          displayValue: Math.pow(displayValue, 4),
+        });
+        break;
+      case 'x^3':
+        this.setState({
+          displayValue: Math.pow(displayValue, 4),
+        });
+        break;
+      case '10^x':
+        let x = Math.round(displayValue);
+        this.setState({
+          displayValue: Math.pow(10, x),
+        });
+        break;
+      case '+/-':
+        this.setState({
+          displayValue: displayValue * -1,
+        });
+        break;
+      case 'e^x':
+        let y = Math.round(displayValue);
+        this.setState({
+          displayValue: Math.pow(Math.E, y).toFixed(4),
+        });
+        break;
+      case 'e':
+        this.setState({
+          displayValue: Math.E.toFixed(4),
+        });
+        break;
+      case 'pi':
+        this.setState({
+          displayValue: Math.PI.toFixed(4),
+        });
+        break;
+      case 'ln(x)':
+        this.setState({
+          displayValue: Math.log(displayValue).toFixed(2),
+        });
+        break;
+      case 'DEL':
+        if (displayValue.length > 1) {
+          this.setState({
+            displayValue: displayValue.substr(0, displayValue.length - 1),
+          });
+        } else {
+          this.setState({
+            displayValue: '0',
+          });
+        }
         break;
     }
   };
