@@ -1,31 +1,30 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Text} from 'react-native';
 
-class Result extends Component {
+class Error extends Component {
   render() {
     const {title} = this.props;
     return (
-      <View style={styles.result}>
-        <Text style={styles.resultText}>{title}</Text>
+      <View style={styles.error}>
+        <Text style={styles.errorText}>{title}</Text>
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  result: {
+  error: {
     backgroundColor: '#8f919d',
-    height: '70%',
+    height: '30%',
     justifyContent: 'center',
     alignItems: 'flex-end',
   },
 
-  resultText: {
-    fontSize: 35,
-    fontWeight: 'bold',
+  errorText: {
+    fontSize: 15,
     margin: 10,
-    color: 'white',
+    color: 'red',
   },
 });
 
-export default Result;
+export default Error;

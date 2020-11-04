@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
 import Button from './Button';
 import Result from './Result';
+import Error from './Error';
 
 export default class App extends Component {
   constructor(props) {
@@ -16,16 +17,16 @@ export default class App extends Component {
       displayValue: '0',
       operator: null,
       myValue: '0',
-      tempValue: '',
       isDot: false,
       isClicked: false,
       isEqualsClicked: false,
+      errorText: ' ',
       orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
     };
 
     this.portraitButtons = [
-      {key: 1, title: 'AC', color: '#7d8491', size: '25%'},
-      {key: 2, title: ' ', color: '#7d8491', size: '50%'},
+      {key: 1, title: 'AC', color: '#787d8c', size: '25%'},
+      {key: 2, title: ' ', color: '#787d8c', size: '50%'},
       {key: 3, title: '/', color: '#1e5169', size: '25%'},
       {key: 4, title: '7', color: '#7d8491', size: '25%'},
       {key: 5, title: '8', color: '#7d8491', size: '25%'},
@@ -46,10 +47,10 @@ export default class App extends Component {
 
     this.landscapeButtons = [
       {key: 1, title: '√x', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 2, title: '%', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 2, title: 'log10', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 3, title: '+/-', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 4, title: 'AC', color: '#787d8c', size: String(100 / 6) + '%'},
-      {key: 5, title: 'DEL', color: '#787d8c', size: String(100 / 6) + '%'},
+      {key: 5, title: '%', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 6, title: '/', color: '#1e5169', size: String(100 / 6) + '%'},
       {key: 7, title: 'e^x', color: '#787d8c', size: String(100 / 6) + '%'},
       {key: 8, title: '10^x', color: '#787d8c', size: String(100 / 6) + '%'},
@@ -127,7 +128,6 @@ export default class App extends Component {
       isDot,
       isClicked,
       isEqualsClicked,
-      tempValue,
     } = this.state;
 
     switch (input) {
@@ -143,6 +143,7 @@ export default class App extends Component {
       case '9':
         this.setState({
           displayValue: displayValue === '0' ? input : displayValue + input,
+          errorText: ' ',
         });
         break;
       case '+':
@@ -158,6 +159,7 @@ export default class App extends Component {
             isDot: false,
             isClicked: true,
             isEqualsClicked: false,
+            errorText: ' ',
           });
         } else {
           this.setState({
@@ -170,29 +172,28 @@ export default class App extends Component {
           this.setState({
             displayValue: displayValue + input,
             isDot: true,
+            errorText: ' ',
           });
         }
         break;
       case '=':
-        // eslint-disable-next-line no-eval
-
         if (operator != null) {
           if (!isEqualsClicked) {
+            if (displayValue.charAt(displayValue.length - 1) === '.') {
+              this.setState({
+                displayValue: displayValue + '0',
+              });
+            }
             // eslint-disable-next-line no-eval
             let result = eval(myValue + operator + displayValue);
             this.setState({
               tempValue: displayValue, //remembers last number
-              displayValue: result % 1 === 0 ? result : result.toFixed(2),
+              displayValue: result % 1 === 0 ? result : result.toFixed(4),
+              isDot: true,
               isClicked: false,
-              myValue: result % 1 === 0 ? result : result.toFixed(2),
+              myValue: displayValue,
               isEqualsClicked: true,
-            });
-          } else {
-            // eslint-disable-next-line no-eval
-            let result = eval(myValue + operator + tempValue);
-            this.setState({
-              displayValue: result % 1 === 0 ? result : result.toFixed(2),
-              myValue: result % 1 === 0 ? result : result.toFixed(2),
+              errorText: ' ',
             });
           }
         }
@@ -206,19 +207,29 @@ export default class App extends Component {
           isDot: false,
           isClicked: false,
           isEqualsClicked: false,
+          errorText: ' ',
         });
         break;
       case '√x':
         let result = Math.sqrt(displayValue);
-        this.setState({
-          displayValue: result % 1 === 0 ? result : result.toFixed(4),
-        });
+        if (displayValue >= 0) {
+          this.setState({
+            displayValue: result % 1 === 0 ? result : result.toFixed(4),
+            isDot: true,
+            errorText: ' ',
+          });
+        } else {
+          this.setState({
+            errorText: result % 1 === 0 ? result : result.toFixed(4),
+          });
+        }
         break;
       case 'x!':
-        if (displayValue <= 20) {
+        if (displayValue <= 20 && displayValue >= 0) {
           if (displayValue === 0 || displayValue === 1) {
             this.setState({
               displayValue: 1,
+              errorText: ' ',
             });
           } else {
             let factorial = 1;
@@ -229,60 +240,84 @@ export default class App extends Component {
             }
             this.setState({
               displayValue: factorial,
+              errorText: ' ',
             });
           }
+        } else {
+          this.setState({
+            errorText: 'Wrong value!',
+          });
         }
         break;
       case 'x^2':
         this.setState({
-          displayValue: Math.pow(displayValue, 4),
+          displayValue: Math.pow(displayValue, 2),
+          errorText: ' ',
         });
         break;
       case 'x^3':
         this.setState({
-          displayValue: Math.pow(displayValue, 4),
+          displayValue: Math.pow(displayValue, 3),
+          errorText: ' ',
         });
         break;
       case '10^x':
         let x = Math.round(displayValue);
         this.setState({
           displayValue: Math.pow(10, x),
+          errorText: ' ',
         });
         break;
       case '+/-':
         this.setState({
           displayValue: displayValue * -1,
+          errorText: ' ',
         });
         break;
       case 'e^x':
         let y = Math.round(displayValue);
         this.setState({
           displayValue: Math.pow(Math.E, y).toFixed(4),
+          errorText: ' ',
         });
         break;
       case 'e':
         this.setState({
           displayValue: Math.E.toFixed(4),
+          isDot: true,
+          errorText: ' ',
         });
         break;
       case 'pi':
         this.setState({
           displayValue: Math.PI.toFixed(4),
+          isDot: true,
+          errorText: ' ',
         });
         break;
       case 'ln(x)':
-        this.setState({
-          displayValue: Math.log(displayValue).toFixed(2),
-        });
-        break;
-      case 'DEL':
-        if (displayValue.length > 1) {
+        if (displayValue <= 0) {
           this.setState({
-            displayValue: displayValue.substr(0, displayValue.length - 1),
+            errorText: Math.log(displayValue).toFixed(4),
           });
         } else {
           this.setState({
-            displayValue: '0',
+            displayValue: Math.log(displayValue).toFixed(4),
+            isDot: true,
+            errorText: ' ',
+          });
+        }
+
+        break;
+      case 'log10':
+        if (displayValue >= 0) {
+          this.setState({
+            displayValue: Math.log10(displayValue).toFixed(4),
+            isDot: true,
+          });
+        } else {
+          this.setState({
+            errorText: Math.log10(displayValue).toFixed(4),
           });
         }
         break;
@@ -298,6 +333,7 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.resultStyle}>
+          <Error title={this.state.errorText} />
           <Result title={this.state.displayValue} />
         </View>
         {view}
