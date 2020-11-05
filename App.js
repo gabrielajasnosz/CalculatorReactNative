@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
 import Button from './Button';
-import Result from './Result';
-import Error from './Error';
+import TextView from './TextView';
 
 export default class App extends Component {
   constructor(props) {
@@ -333,8 +332,18 @@ export default class App extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.resultStyle}>
-          <Error title={this.state.errorText} />
-          <Result title={this.state.displayValue} />
+          <TextView
+            title={this.state.errorText}
+            fontColor={'#a50404'}
+            size={20}
+            boxHeight={'30%'}
+          />
+          <TextView
+            title={this.state.displayValue}
+            fontColor={'#ffffff'}
+            size={35}
+            boxHeight={'70%'}
+          />
         </View>
         {view}
       </View>
