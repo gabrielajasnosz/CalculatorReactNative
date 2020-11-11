@@ -1,9 +1,14 @@
 import React, {Component} from 'react';
 import {StyleSheet, View, Dimensions} from 'react-native';
+import SplashScreen from 'react-native-splash-screen';
 import Button from './Button';
 import TextView from './TextView';
 
 export default class App extends Component {
+  componentDidMount() {
+    SplashScreen.hide();
+  }
+
   constructor(props) {
     super(props);
 
@@ -11,7 +16,6 @@ export default class App extends Component {
       const dim = Dimensions.get('window');
       return dim.height > dim.width;
     };
-
     this.state = {
       displayValue: '0',
       operator: null,
