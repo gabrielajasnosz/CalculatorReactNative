@@ -4,6 +4,8 @@ import SplashScreen from 'react-native-splash-screen';
 import Button from './Button';
 import TextView from './TextView';
 
+const mexp = require('math-expression-evaluator');
+
 export default class App extends Component {
   componentDidMount() {
     SplashScreen.hide();
@@ -19,11 +21,8 @@ export default class App extends Component {
     this.state = {
       displayValue: '0',
       operator: null,
-      myValue: '0',
+      myValue: '',
       isDot: false,
-      isClicked: false,
-      isEqualsClicked: false,
-      errorText: ' ',
       orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
     };
 
@@ -124,14 +123,7 @@ export default class App extends Component {
   }
 
   handleInput = (input) => {
-    const {
-      displayValue,
-      operator,
-      myValue,
-      isDot,
-      isClicked,
-      isEqualsClicked,
-    } = this.state;
+    const {displayValue, operator, myValue, isDot} = this.state;
 
     switch (input) {
       case '0':
@@ -154,21 +146,12 @@ export default class App extends Component {
       case '*':
       case '/':
       case '%':
-        if (!isClicked) {
-          this.setState({
-            myValue: displayValue,
-            operator: input,
-            displayValue: '0',
-            isDot: false,
-            isClicked: true,
-            isEqualsClicked: false,
-            errorText: ' ',
-          });
-        } else {
-          this.setState({
-            operator: input,
-          });
-        } //if the operator is already chosen it only changes the operator not the remembered values
+        this.setState({
+          operator: input,
+          myValue: myValue + displayValue + input,
+          displayValue: '0',
+          isDot: false,
+        }); //if the operator is already chosen it only changes the operator not the remembered values
         break;
       case '.':
         if (!isDot) {
@@ -180,149 +163,82 @@ export default class App extends Component {
         }
         break;
       case '=':
-        if (operator != null) {
-          if (!isEqualsClicked) {
-            if (displayValue.charAt(displayValue.length - 1) === '.') {
-              this.setState({
-                displayValue: displayValue + '0',
-              });
-            }
-            // eslint-disable-next-line no-eval
-            let result = eval(myValue + operator + displayValue);
-            this.setState({
-              tempValue: displayValue, //remembers last number
-              displayValue: result % 1 === 0 ? result : result.toFixed(4),
-              isDot: true,
-              isClicked: false,
-              myValue: displayValue,
-              isEqualsClicked: true,
-              errorText: ' ',
-            });
-          }
+        // eslint-disable-next-line no-eval
+        let result = mexp.eval(myValue + displayValue);
+        if (result % 1 !== 0) {
+          this.setState({
+            isDot: true,
+          });
         }
+        this.setState({
+          displayValue: result,
+          isDot: true,
+          myValue: ' ',
+        });
         break;
       case 'AC':
         this.setState({
           displayValue: '0',
           operator: null,
-          myValue: '0',
+          myValue: ' ',
           tempValue: '',
           isDot: false,
-          isClicked: false,
-          isEqualsClicked: false,
-          errorText: ' ',
         });
         break;
       case '√x':
-        let result = Math.sqrt(displayValue);
-        if (displayValue >= 0) {
-          this.setState({
-            displayValue: result % 1 === 0 ? result : result.toFixed(4),
-            isDot: true,
-            errorText: ' ',
-          });
-        } else {
-          this.setState({
-            errorText: result % 1 === 0 ? result : result.toFixed(4),
-          });
-        }
+        this.setState({
+          displayValue: 'pow(' + displayValue + ',0.5)',
+        });
         break;
       case 'x!':
-        if (displayValue <= 20 && displayValue >= 0) {
-          if (displayValue === 0 || displayValue === 1) {
-            this.setState({
-              displayValue: 1,
-              errorText: ' ',
-            });
-          } else {
-            let factorial = 1;
-            let counter = Math.round(displayValue);
-            while (counter > 1) {
-              factorial = factorial * counter;
-              counter = counter - 1;
-            }
-            this.setState({
-              displayValue: factorial,
-              errorText: ' ',
-            });
-          }
-        } else {
-          this.setState({
-            errorText: 'Wrong value!',
-          });
-        }
+        this.setState({
+          displayValue: '(' + displayValue + '!' + ')',
+        });
         break;
       case 'x^2':
         this.setState({
-          displayValue: Math.pow(displayValue, 2),
-          errorText: ' ',
+          displayValue: 'pow(' + displayValue + ', 2)',
         });
         break;
       case 'x^3':
         this.setState({
-          displayValue: Math.pow(displayValue, 3),
-          errorText: ' ',
+          displayValue: 'pow(' + displayValue + ', 3)',
         });
         break;
       case '10^x':
-        let x = Math.round(displayValue);
         this.setState({
-          displayValue: Math.pow(10, x),
-          errorText: ' ',
+          displayValue: 'pow(10,' + displayValue + ')',
         });
         break;
       case '+/-':
         this.setState({
           displayValue: displayValue * -1,
-          errorText: ' ',
         });
         break;
       case 'e^x':
-        let y = Math.round(displayValue);
         this.setState({
-          displayValue: Math.pow(Math.E, y).toFixed(4),
-          errorText: ' ',
+          displayValue: 'pow(e,' + displayValue + ')',
         });
         break;
       case 'e':
         this.setState({
-          displayValue: Math.E.toFixed(4),
-          isDot: true,
-          errorText: ' ',
+          displayValue: 'e',
         });
         break;
       case 'pi':
         this.setState({
-          displayValue: Math.PI.toFixed(4),
-          isDot: true,
-          errorText: ' ',
+          displayValue: 'pi',
         });
         break;
       case 'ln(x)':
-        if (displayValue <= 0) {
-          this.setState({
-            errorText: Math.log(displayValue).toFixed(4),
-          });
-        } else {
-          this.setState({
-            displayValue: Math.log(displayValue).toFixed(4),
-            isDot: true,
-            errorText: ' ',
-          });
-        }
-
+        this.setState({
+          displayValue: 'ln(' + displayValue + ')',
+        });
         break;
       case 'log10':
-        if (displayValue >= 0) {
-          this.setState({
-            displayValue: Math.log10(displayValue).toFixed(4),
-            isDot: true,
-          });
-        } else {
-          this.setState({
-            errorText: Math.log10(displayValue).toFixed(4),
-          });
-        }
+        this.setState({
+          displayValue: 'log(' + displayValue + ')',
+        });
         break;
     }
   };
@@ -337,8 +253,8 @@ export default class App extends Component {
       <View style={styles.container}>
         <View style={styles.resultStyle}>
           <TextView
-            title={this.state.errorText}
-            fontColor={'#a50404'}
+            title={this.state.myValue}
+            fontColor={'#a9a9a9'}
             size={20}
             boxHeight={'30%'}
           />
