@@ -20,8 +20,7 @@ export default class App extends Component {
     };
     this.state = {
       displayValue: '0',
-      operator: null,
-      myValue: '',
+      calculationText: '',
       isDot: false,
       orientation: isPortrait() ? 'PORTRAIT' : 'LANDSCAPE',
     };
@@ -123,7 +122,7 @@ export default class App extends Component {
   }
 
   handleInput = (input) => {
-    const {displayValue, operator, myValue, isDot} = this.state;
+    const {displayValue, calculationText, isDot} = this.state;
 
     switch (input) {
       case '0':
@@ -138,7 +137,6 @@ export default class App extends Component {
       case '9':
         this.setState({
           displayValue: displayValue === '0' ? input : displayValue + input,
-          errorText: ' ',
         });
         break;
       case '+':
@@ -147,11 +145,10 @@ export default class App extends Component {
       case '/':
       case '%':
         this.setState({
-          operator: input,
-          myValue: myValue + displayValue + input,
+          calculationText: calculationText + displayValue + input,
           displayValue: '0',
           isDot: false,
-        }); //if the operator is already chosen it only changes the operator not the remembered values
+        });
         break;
       case '.':
         if (!isDot) {
@@ -163,8 +160,7 @@ export default class App extends Component {
         }
         break;
       case '=':
-        // eslint-disable-next-line no-eval
-        let result = mexp.eval(myValue + displayValue);
+        let result = mexp.eval(calculationText + displayValue);
         if (result % 1 !== 0) {
           this.setState({
             isDot: true,
@@ -173,15 +169,14 @@ export default class App extends Component {
         this.setState({
           displayValue: result,
           isDot: true,
-          myValue: ' ',
+          calculationText: ' ',
         });
         break;
       case 'AC':
         this.setState({
           displayValue: '0',
           operator: null,
-          myValue: ' ',
-          tempValue: '',
+          calculationText: ' ',
           isDot: false,
         });
         break;
@@ -192,7 +187,7 @@ export default class App extends Component {
         break;
       case 'x!':
         this.setState({
-          displayValue: '(' + displayValue + '!' + ')',
+          displayValue: displayValue + '!',
         });
         break;
       case 'x^2':
@@ -253,7 +248,7 @@ export default class App extends Component {
       <View style={styles.container}>
         <View style={styles.resultStyle}>
           <TextView
-            title={this.state.myValue}
+            title={this.state.calculationText}
             fontColor={'#a9a9a9'}
             size={20}
             boxHeight={'30%'}
